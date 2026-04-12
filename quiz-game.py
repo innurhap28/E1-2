@@ -1,22 +1,18 @@
-
-# 파이썬 문제 json 으로 만들어줘
-# {
-#   "problem": "두 수의 합",
-#   "description": "주어진 두 수의 합을 구하는 함수를 작성하세요.",
-#   "input": {
-#     "num1": "첫 번째 숫자 (정수)",
-#     "num2": "두 번째 숫자 (정수)"
-#   },
-#   "output": "두 수의 합 (정수)",
-#   "example": {
-#     "input": {
-#       "num1": 5,
-#       "num2": 3
-#     },
-#     "output": 8
-#   }
-# }
-
+class Quiz:
+    def __init__(self, problem, choices, answer):
+        self.problem = problem
+        self.choices = choices
+        self.answer = answer
+    
+    def display_problem(self):
+        print(self.problem)
+        for i, choice in enumerate(self.choices, 1):
+            print(f"{i}. {choice}")
+    
+    def check_answer(self, user_answer):
+        return user_answer == self.answer
+    
 
 class QuizGame:
     pass
+
