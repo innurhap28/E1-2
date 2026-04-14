@@ -1,3 +1,6 @@
+import json
+import os
+
 class Quiz:
     def __init__(self, problem, choices, answer):
         self.problem = problem
@@ -14,9 +17,45 @@ class Quiz:
     
 
 class QuizGame:
-    def __init__(self, quiz_list, best_score=0):
-        self.quiz_list = quiz_list
-        self.best_score = best_score
+    def __init__(self, file_path="state.json"):
+        self.file_path = file_path
+        self.quiz_list = []
+        self.best_score = 0       
+
+        self.load_state()
+
+    def load_state(self):
+        if not os.path.exists(self.file_path):
+            print("기존 데이터 파일이 없어 새로 생성합니다")
+            return
+        
+        try:
+            with open(self.file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self.best_score = data.get("best_score", 0)
+
+                self.quiz_list = [
+                    Quiz(q["problem"], q["choices"], q["answer"])
+                    for q in data.get("quizzes", [])
+                ]
+        except (json.JSONDecodeError, KeyError):
+            print("테이터 파일 읽기 오류. 파일을 초기화합니다")
+
+    def save_state(self):
+        data = {
+            "best_score": self.best_score,
+            "quizzes": [
+                {
+                    "problem": q.problem,
+                    "choices": q.choices,
+                    "answer": q.answer
+                } for q in self.quiz_list
+            ]
+        }
+        with open(self.file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+
 
     def solve_quiz(self):
 
@@ -30,12 +69,10 @@ class QuizGame:
             quiz.display_problem()
             user_answer = get_valid_number("정답 번호를 입력하세요: ", 1, len(quiz.choices))
             if quiz.check_answer(user_answer):
-                print("정답입니다!")
+                print("정답입니다!\n")
                 score += 1
             else:
-                print("틀렸습니다.")
-
-            print()  # 줄 바꿈
+                print("틀렸습니다.\n")
 
         print(f"당신의 점수는 {score}/{len(self.quiz_list)}입니다.")
 
@@ -44,6 +81,34 @@ class QuizGame:
             print("새로운 최고 점수입니다!")
         else:
             print(f"최고 점수는 {self.best_score}입니다.")
+
+        self.save_state()
+
+
+    def add_quiz(self):
+        print("새로운 퀴즈 추가하기")
+
+        while True:
+            problem = input("문제를 입력하세요: ").strip()
+            if problem:
+                break
+            print("문제는 비어 있을 수 없습니다")
+
+        choices = []
+        print("보기를 입력하세요")
+        while len(choices) < 4:
+            choice = input(f"{len(choices) + 1}번 보기: ").strip()
+            if not choice : 
+                print("보기는 공백일 수 없습니다")
+                continue
+            choices.append(choice)
+
+        answer = get_valid_number(f"정답 번호를 입력하세요: ", 1, 4)
+
+        new_quiz = Quiz(problem, choices, answer)
+        self.quiz_list.append(new_quiz)
+
+        self.save_state()
 
 
 quiz1 = Quiz("김시현이 좋아하는 색깔은?", ["빨간색", "파란색", "노란색", "초록색"], 3)
