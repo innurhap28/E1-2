@@ -5,7 +5,7 @@ class Quiz:
     def __init__(self, problem, choices, answer):
         self.problem = problem
         self.choices = choices
-        self.answer = answer
+        self.answer = int(answer)
     
     def display_problem(self):
         print(self.problem)
@@ -24,22 +24,33 @@ class QuizGame:
 
         self.load_state()
 
+    def get_default_quizzes(self):
+        return [
+            Quiz("김시현이 좋아하는 색깔은?", ["빨간색", "파란색", "노란색", "초록색"], 3),
+            Quiz("김시현이 밴드부에서 맡고 있는 악기는?", ["드럼", "베이스", "기타", "키보드"], 1),
+            Quiz("김시현이 가장 좋아하는 동물은?", ["강아지", "고양이", "토끼", "햄스터"], 2),
+            Quiz("김시현이 배워본 적 없는 언어는?", ["영어", "일본어", "러시아어", "프랑스어"], 3),
+            Quiz("김시현이 대학에서 전공하는 것은?", ["컴퓨터공학", "화학", "심리학", "물리학"], 4)
+        ]
+
     def load_state(self):
         if not os.path.exists(self.file_path):
             print("기존 데이터 파일이 없어 새로 생성합니다")
+            self.quiz_list = self.get_default_quizzes()
+            self.save_state()
             return
         
         try:
             with open(self.file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 self.best_score = data.get("best_score", 0)
-
                 self.quiz_list = [
                     Quiz(q["problem"], q["choices"], q["answer"])
                     for q in data.get("quizzes", [])
                 ]
         except (json.JSONDecodeError, KeyError):
             print("데이터 파일 읽기 오류. 파일을 초기화합니다")
+            self.quiz_list = self.get_default_quizzes()
 
     def save_state(self):
         data = {
@@ -107,7 +118,7 @@ class QuizGame:
 
         self.save_state()
     
-    def load_quizzes(self):
+    def view_quizzes(self):
         if not self.quiz_list:
             print("퀴즈가 없습니다.")
             return
@@ -116,20 +127,31 @@ class QuizGame:
         for i, quiz in enumerate(self.quiz_list, 1):
             print(f"{i}. {quiz.problem}")
 
-    def score_board(self):
-        if self.best_score == 0:
-            print("아직 최고 점수가 없습니다.")
-            return
-        
+    def score_board(self):    
         print(f"현재 최고 점수: {self.best_score}")
 
-quiz1 = Quiz("김시현이 좋아하는 색깔은?", ["빨간색", "파란색", "노란색", "초록색"], 3)
-quiz2 = Quiz("김시현이 밴드부에서 맡고 있는 악기는?", ["드럼", "베이스", "기타", "키보드"], 1)
-quiz3 = Quiz("김시현이 가장 좋아하는 동물은?", ["강아지", "고양이", "토끼", "햄스터"], 2)
-quiz4 = Quiz("김시현이 배워본 적 없는 언어는?", ["영어", "일본어", "러시아어", "프랑스어"], 3)
-quiz5 = Quiz("김시현이 대학에서 전공하는 것은?", ["컴퓨터공학", "화학", "심리학", "물리학"], 4)
+    def run(self):
+        while True:
+            print("\n메뉴:")
+            print("1. 퀴즈 풀기")
+            print("2. 퀴즈 추가")
+            print("3. 퀴즈 목록")
+            print("4. 최고 점수 확인")
+            print("5. 종료")
 
-quiz_list = [quiz1, quiz2, quiz3, quiz4, quiz5]
+            choice = get_valid_number("메뉴 번호를 입력하세요: ", 1, 5)
+
+            if choice == 1:
+                self.solve_quiz()
+            elif choice == 2:
+                self.add_quiz()
+            elif choice == 3:
+                self.view_quizzes()
+            elif choice == 4:
+                self.score_board()
+            elif choice == 5:
+                print("게임을 종료합니다.")
+                break
 
 def get_valid_number(prompt, min_val, max_val):
     while True:
