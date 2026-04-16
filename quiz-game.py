@@ -39,7 +39,7 @@ class QuizGame:
                     for q in data.get("quizzes", [])
                 ]
         except (json.JSONDecodeError, KeyError):
-            print("테이터 파일 읽기 오류. 파일을 초기화합니다")
+            print("데이터 파일 읽기 오류. 파일을 초기화합니다")
 
     def save_state(self):
         data = {
@@ -54,8 +54,6 @@ class QuizGame:
         }
         with open(self.file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-
-
 
     def solve_quiz(self):
 
@@ -84,7 +82,6 @@ class QuizGame:
 
         self.save_state()
 
-
     def add_quiz(self):
         print("새로운 퀴즈 추가하기")
 
@@ -109,6 +106,15 @@ class QuizGame:
         self.quiz_list.append(new_quiz)
 
         self.save_state()
+    
+    def load_quizzes(self):
+        if not self.quiz_list:
+            print("퀴즈가 없습니다.")
+            return
+        
+        print(f"저장된 퀴즈 목록 (총 {len(self.quiz_list)}개): ")
+        for i, quiz in enumerate(self.quiz_list, 1):
+            print(f"{i}. {quiz.problem}")
 
 
 quiz1 = Quiz("김시현이 좋아하는 색깔은?", ["빨간색", "파란색", "노란색", "초록색"], 3)
