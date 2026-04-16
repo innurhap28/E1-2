@@ -97,7 +97,7 @@ class QuizGame:
         print("새로운 퀴즈 추가하기")
 
         while True:
-            problem = input("문제를 입력하세요: ").strip()
+            problem = input("문제를 입력하세요: ")
             if problem:
                 break
             print("문제는 비어 있을 수 없습니다")
