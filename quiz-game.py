@@ -116,6 +116,12 @@ class QuizGame:
         for i, quiz in enumerate(self.quiz_list, 1):
             print(f"{i}. {quiz.problem}")
 
+    def score_board(self):
+        if self.best_score == 0:
+            print("아직 최고 점수가 없습니다.")
+            return
+        
+        print(f"현재 최고 점수: {self.best_score}")
 
 quiz1 = Quiz("김시현이 좋아하는 색깔은?", ["빨간색", "파란색", "노란색", "초록색"], 3)
 quiz2 = Quiz("김시현이 밴드부에서 맡고 있는 악기는?", ["드럼", "베이스", "기타", "키보드"], 1)
