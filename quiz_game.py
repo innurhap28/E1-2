@@ -69,14 +69,14 @@ class QuizGame:
     def solve_quiz(self):
 
         if not self.quiz_list:
-            print("퀴즈가 없습니다.")
+            print("퀴즈가 없습니다")
             return
         
         score = 0
         
         for quiz in self.quiz_list:
             quiz.display_problem()
-            user_answer = get_valid_number("정답 번호를 입력하세요: ", 1, len(quiz.choices))
+            user_answer = get_valid_number("\n정답 번호를 입력하세요: ", 1, len(quiz.choices))
             if quiz.check_answer(user_answer):
                 print("정답입니다!\n")
                 score += 1
@@ -132,14 +132,16 @@ class QuizGame:
 
     def run(self):
         while True:
-            print("\n메뉴:")
+            print("\n===== 메뉴=====\n")
             print("1. 퀴즈 풀기")
             print("2. 퀴즈 추가")
             print("3. 퀴즈 목록")
             print("4. 최고 점수 확인")
-            print("5. 종료")
+            print("5. 종료\n")
 
+            print("=" * 30)
             choice = get_valid_number("메뉴 번호를 입력하세요: ", 1, 5)
+            print("=" * 30 + "\n")
 
             if choice == 1:
                 self.solve_quiz()
@@ -153,22 +155,28 @@ class QuizGame:
                 print("게임을 종료합니다.")
                 break
 
+
 def get_valid_number(prompt, min_val, max_val):
     while True:
         user_input = input(prompt).strip()
 
         if user_input == "":
-            print("입력이 비어 있습니다. 다시 입력해주세요.")
+            print("입력이 비어 있습니다")
             continue
 
+        # 퀴즈 풀기 진행 중 프로그램 종료를 원할 시 'q'를 입력해서 종료
+        if user_input.lower() == 'q':
+            print("프로그램을 종료합니다")
+            exit()
+
         if not user_input.isdigit():
-            print("유효한 숫자를 입력해주세요.")
+            print("유효한 숫자를 입력해주세요")
             continue
 
         user_answer = int(user_input)
 
         if user_answer < min_val or user_answer > max_val:
-            print(f"{min_val}에서 {max_val} 사이의 숫자를 입력해주세요.")
+            print(f"{min_val}에서 {max_val} 사이의 숫자를 입력해주세요")
             continue
 
         return user_answer
