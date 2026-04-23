@@ -263,4 +263,10 @@ def get_valid_number(prompt, min_val, max_val):
 
 ---
 
-## Git 
+## 커밋 규칙
+- init : 프로젝트 초기화
+- feat : 새로운 기능 추가
+- fix : 버그 수정
+- docs : 문서 수정
+- style : (코드의 수정 없이) 스타일만 변경
+
